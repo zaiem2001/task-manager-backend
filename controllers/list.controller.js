@@ -1,4 +1,4 @@
-const { List } = require("../models");
+const { List, Task } = require("../models");
 
 const listControllers = {
   getAllLists: async (req, res, next) => {
@@ -54,10 +54,31 @@ const listControllers = {
 
       const updatedList = await List.findOneAndUpdate(
         { _id: listId },
-        { $set: { title } }
+        { $set: { title } },
+        { new: true }
       );
 
       return res.status(201).json({ list: updatedList });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  deleteList: async (req, res, next) => {
+    try {
+      const { listId } = req.params;
+
+      const deletedList = await List.findOneAndUpdate(
+        { _id: listId },
+        {
+          $set: { deleted: true },
+        },
+        { new: true }
+      );
+
+      await Task.updateMany({ list: listId }, { $set: { deleted: true } });
+
+      res.status(200).json({ list: deletedList });
     } catch (error) {
       next(error);
     }
