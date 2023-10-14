@@ -10,7 +10,7 @@ const userControllers = {
       const { email, password } = req.body;
 
       if (checkFalseString(email) || checkFalseString(password)) {
-        res.status(404);
+        res.status(400);
         throw new Error("Invalid request!");
       }
 
@@ -24,7 +24,7 @@ const userControllers = {
       const isPwdValid = await bcrypt.compare(password, currentUser.password);
 
       if (!isPwdValid) {
-        res.status(404);
+        res.status(401);
         throw new Error("Invalid username or Password!");
       }
       const { password: userPwd, ...rest } = currentUser._doc;
@@ -42,14 +42,14 @@ const userControllers = {
       const { email, password } = req.body;
 
       if (checkFalseString(email) || checkFalseString(password)) {
-        res.status(404);
+        res.status(400);
         throw new Error("Invalid request!");
       }
 
       const emailAlreadyExists = await User.findOne({ email });
 
       if (emailAlreadyExists) {
-        res.status(404);
+        res.status(400);
         throw new Error("User already exists!");
       }
 
