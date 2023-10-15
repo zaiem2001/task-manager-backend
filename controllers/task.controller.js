@@ -1,9 +1,16 @@
+const mongoose = require("mongoose");
 const { Task, List } = require("../models");
 
 const taskControllers = {
   getTasksByList: async (req, res, next) => {
     try {
       const { listId } = req.params;
+
+      if (!mongoose.isValidObjectId(listId)) {
+        res.status(400);
+        throw new Error("Invalid list ID.");
+      }
+
       const loggedInUser = req.user;
 
       const taskItems = await Task.find({
