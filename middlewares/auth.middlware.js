@@ -30,6 +30,9 @@ const authMiddleWare = async (req, res, next) => {
       next();
     }
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401);
+    }
     next(error);
   }
 };
